@@ -22,7 +22,7 @@ data_dir = "/app/data"
 [feeds]
 
   [feeds.ID1]
-  url = "https://www.youtube.com/@astralclub5964"  # zamenjaj s kanalom
+  url = "https://www.youtube.com/channel/UCpVk_OmMmRs0RnmOQTHXyrA"  # zamenjaj s kanalom
   page_size = 50
   update_period = "12h"
   quality = "high"
