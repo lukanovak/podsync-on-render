@@ -1,18 +1,25 @@
-# Build Podsync
-FROM golang:1.22 AS builder
-WORKDIR /app
-RUN git clone https://github.com/mxpv/podsync.git . && go build -o podsync
+# ---------- Build stage ----------
+FROM golang:1.22-bookworm AS builder
+# install git so we can git clone the Podsync source
+RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
+WORKDIR /src
+RUN git clone https://github.com/mxpv/podsync.git .
+# build the podsync binary
+RUN go build -trimpath -ldflags="-s -w" -o /out/podsync ./cmd/podsync
 
-# Runtime image
+# ---------- Runtime stage ----------
 FROM debian:bookworm-slim
+# minimal runtime deps:
+# - ca-certificates & tzdata: TLS + timezones
+# - ffmpeg: media processing
+# - python3: for youtube-dl/yt-dlp scripts used by Podsync
+# - curl: handy for self-update / hooks
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates tzdata ffmpeg python3 curl \
+    && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-# Podsync binary
-COPY --from=builder /app/podsync /usr/local/bin/podsync
-# Your config
+COPY --from=builder /out/podsync /usr/local/bin/podsync
 COPY config.toml /app/config.toml
 
-# Podsync default port
 EXPOSE 8080
-
-# Start Podsync
 CMD ["podsync", "-config", "/app/config.toml"]
