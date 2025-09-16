@@ -1,148 +1,39 @@
-# =========================
-# Podsync config for Render
-# =========================
-
-# Global cleanup policy (safe default)
+# Cleanup: naj bo nekaj malega za varnost
 [cleanup]
 keep_last = 50
 
-# -------------------------
-# Web server (behind Render)
-# -------------------------
 [server]
-# Podsync listens inside the container. Render routes public traffic to it.
 port = 8080
 bind_address = "0.0.0.0"
-
-# IMPORTANT: set this to your public Render URL so RSS/enclosure links are correct.
-# Example: "https://podsync.onrender.com"
-hostname = "https://YOUR-RENDER-SERVICE.onrender.com"
-
-# Optional web UI at /
+hostname = "https://YOUR-RENDER-URL.onrender.com"
+path = "feed"
 web_ui = true
-
-# Do NOT enable TLS in the app—Render already provides HTTPS.
 tls = false
-# certificate_path = ""
-# key_file_path = ""
 
-# -------------------------
-# Storage (use S3 for persistence)
-# -------------------------
 [storage]
-type = "s3"
+type = "local"
+[storage.local]
+data_dir = "/app/data"
 
-[storage.s3]
-# Leave credentials to environment variables:
-#   AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
-# Optional: AWS_SESSION_TOKEN if needed.
+[tokens]
+# API key boš dodal na Render kot environment variable
+# youtube = "YOUTUBE_API_KEY"
 
-# Pick your region & bucket (create them first).
-region = "eu-central-1"
-bucket = "your-podsync-bucket"
-
-# For AWS S3, endpoint can be omitted, but you can pin it if you like:
-endpoint_url = "https://s3.eu-central-1.amazonaws.com"
-
-# Optional prefix inside the bucket (acts like a folder)
-# If you set a prefix, ensure server.hostname includes any CDN/front path if applicable.
-prefix = "podsync"
-
-# -------------------------
-# Tokens (use env vars)
-# -------------------------
-# Omit secrets here; set in Render as environment variables:
-#   PODSYNC_YOUTUBE_API_KEY="..."
-#   PODSYNC_VIMEO_API_KEY="..."
-#   PODSYNC_SOUNDCLOUD_API_KEY="..."
-#   PODSYNC_TWITCH_API_KEY="CLIENT_ID:CLIENT_SECRET"
-# [tokens]
-# youtube = ""
-# vimeo = []
-
-# -------------------------
-# Feeds
-# -------------------------
 [feeds]
 
   [feeds.ID1]
-  # Replace with the channel/user/playlist you want to mirror.
-  url = "https://www.youtube.com/channel/CHANNEL_ID_OR_URL"
-
-  # How many items to fetch per update (higher drains API quota faster)
+  url = "https://www.youtube.com/channel/CHANNEL_ID"  # zamenjaj s kanalom
   page_size = 50
-
-  # Polling cadence (Render free tier may sleep between deploys; Podsync will catch up)
   update_period = "12h"
-
-  # Output format/quality
-  quality = "high"                # "high" or "low"
-  format  = "video"               # "audio", "video", or "custom"
-  # Example custom format (disabled unless format="custom"):
-  # custom_format = { youtube_dl_format = "bestaudio[ext=m4a]", extension = "m4a" }
-
-  # Optional: limit resolution
+  quality = "high"
+  format  = "audio"
   max_height = 720
-
-  # Include in OPML export (shown in Web UI)
   opml = true
-
-  # Optional cron (overrides update_period)
-  # cron_schedule = "@every 12h"
-
-  # Per-feed cleanup (overrides global)
   clean = { keep_last = 10 }
-
-  # Optional filters — delete or tailor as needed
-  # filters = { title = ".*", min_duration = 0, max_duration = 86400, max_age = 365 }
-
-  # Extra yt-dl/yt-dlp args (keep minimal to avoid surprises)
-  youtube_dl_args = []
-
-  # If you don’t want directories like Apple/Google Podcasts to index this feed:
   private_feed = true
 
-  # Optional: post-download hooks (commented out by default)
-  # [[feeds.ID1.post_episode_download]]
-  # command = ["echo", "Downloaded: $EPISODE_TITLE"]
-  # timeout = 30
-
-  # Feed metadata (shows up in podcast apps)
   [feeds.ID1.custom]
-  title = "My Podsync Feed"
-  description = "Synced from YouTube via Podsync"
-  author = "Me"
-  cover_art = "https://YOUR-RENDER-SERVICE.onrender.com/cover.jpg"  # or any public image URL
-  cover_art_quality = "high"
-  category = "Technology"
-  subcategories = ["News"]
-  explicit = false
-  lang = "en"
-  ownerName = "Me"
-  ownerEmail = "me@example.com"
-  # Optional: override <link> in RSS
-  link = "https://YOUR-RENDER-SERVICE.onrender.com"
-
-# -------------------------
-# Database
-# -------------------------
-[database]
-badger = { truncate = true, file_io = true }
-
-# -------------------------
-# Downloader
-# -------------------------
-[downloader]
-self_update = true   # keep yt-dl/yt-dlp fresh
-timeout = 15         # minutes
-
-# -------------------------
-# Logging
-# -------------------------
-[log]
-filename = "podsync.log"
-max_size = 50        # MB
-max_age = 30         # days
-max_backups = 7
-compress = true
-debug = false
+  title = "Moja Podcast Feed"
+  description = "Samodejno iz YouTube kanalov"
+  author = "Jaz"
+  lang = "sl"

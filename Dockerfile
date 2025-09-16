@@ -8,10 +8,10 @@ FROM debian:bookworm-slim
 WORKDIR /app
 # Podsync binary
 COPY --from=builder /app/podsync /usr/local/bin/podsync
-# Your config (make sure config.toml is in the repo root)
+# Your config
 COPY config.toml /app/config.toml
 
-# Podsync listens on 8080 by default
+# Podsync default port
 EXPOSE 8080
 
 # Start Podsync
