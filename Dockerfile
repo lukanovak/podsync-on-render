@@ -1,9 +1,8 @@
-# Uporabi uradno Podsync sliko (vključuje vse odvisnosti)
 FROM mxpv/podsync:latest
 
-# Tvoj config v notranji path
+# Skopiraj svoj config v /app (ta mapa je privzeta v uradnem image-u)
 COPY config.toml /app/config.toml
 
-# (Image že vsebuje podsync binarko in ffmpeg/yt-dlp)
 EXPOSE 8080
+# Pomembno: običajni ASCII vezaji, brez posebnih znakov
 CMD ["podsync", "-config", "/app/config.toml"]
