@@ -5,4 +5,5 @@ COPY config.toml /app/config.toml
 
 EXPOSE 8080
 # Pomembno: običajni ASCII vezaji, brez posebnih znakov
-CMD ["podsync", "-config", "/app/config.toml"]
+CMD ["podsync"]
+
