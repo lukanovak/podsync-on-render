@@ -6,7 +6,7 @@ keep_last = 50
 port = 8080
 bind_address = "0.0.0.0"
 hostname = "https://podsync-on-render.onrender.com"
-path = "feed"
+# path = "feed"
 web_ui = true
 tls = false
 
